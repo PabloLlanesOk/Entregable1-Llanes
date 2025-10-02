@@ -132,16 +132,6 @@ function cargarMantenimiento() {
     .join("");
   document.getElementById("maintenance-items").innerHTML = maintenanceHTML;
 
-  // Actualizar estadísticas
-  const stats = maintenanceTasks.reduce(
-    (acc, tarea) => {
-      if (tarea.completada) acc.completadas++;
-      else acc.pendientes++;
-      return acc;
-    },
-    { completadas: 0, pendientes: 0 }
-  );
-
   document.getElementById("stats-display").innerHTML = `
                 <div class="stat-item"><strong>Tareas completadas:</strong> ${stats.completadas}</div>
                 <div class="stat-item"><strong>Tareas pendientes:</strong> ${stats.pendientes}</div>
