@@ -1,12 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Una pequeña Aventura</title>
+    <title>Mi Fiat 147 Vivace</title>
+    <link rel="stylesheet" href="./css/index.css" />
   </head>
   <body>
-    <h1>Dejame contarte un cuento</h1>
-    <script src="./main.js"></script>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <h2>FIAT 147</h2>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="#inicio" class="nav-link">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a href="#especificaciones" class="nav-link">Especificaciones</a>
+          </li>
+          <li class="nav-item">
+            <a href="#galeria" class="nav-link">Galería</a>
+          </li>
+          <li class="nav-item">
+            <a href="#mantenimiento" class="nav-link">Mantenimiento</a>
+          </li>
+          <li class="nav-item">
+            <a href="#historia" class="nav-link">Historia</a>
+          </li>
+          <li class="nav-item">
+            <a href="#contacto" class="nav-link">Contacto</a>
+          </li>
+        </ul>
+        <div class="nav-toggle">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <header>
+        <h1>Mi Fiat 147 Vivace</h1>
+        <p>Un clásico argentino que nunca pasa de moda</p>
+      </header>
+
+      <div class="car-image">
+        <img id = "car-photo" class="car-photo" src="./photos/Enano.png" alt="Fiat 147 Vivace">
+      </div>
+
+      <div class="sections">
+        <div class="card">
+          <h2>Especificaciones Técnicas</h2>
+          <div id="specs-list"></div>
+        </div>
+
+        <div class="card">
+          <h2>Historial de Modificaciones</h2>
+          <div id="mods-list"></div>
+        </div>
+
+        <div class="card">
+          <h2>Controles del Auto</h2>
+          <div class="controls">
+            <button id="btn-start">Encender Auto</button>
+            <button id="btn-lights">Luces</button>
+            <button id="btn-horn">Bocina</button>
+          </div>
+          <div id="car-status">Estado: Apagado</div>
+        </div>
+      </div>
+
+      <div class="maintenance-list">
+        <h2>Mantenimiento Pendiente</h2>
+        <div id="maintenance-items"></div>
+        <div class="add-maintenance">
+          <input
+            type="text"
+            id="new-maintenance"
+            placeholder="Nueva tarea de mantenimiento"
+          />
+          <button id="btn-add-maintenance">Agregar</button>
+        </div>
+      </div>
+
+      <footer>
+        <p>Página creada con JavaScript - Curso de Desarrollo Web</p>
+      </footer>
+    </div>
+<audio id="sonido-encendido" preload="auto">
+    <source src="/audio/FIAT 147 Y SUS PROBLEMAS..._[cut_1sec].mp3" type="audio/mpeg">
+    Tu navegador no soporta el elemento de audio.
+</audio>
+    <script src="main.js"></script>
   </body>
 </html>

@@ -1,138 +1,209 @@
-/* Mochila del jugador */
-let mochila = [];
+// Array de especificaciones técnicas (objetos)
+const carSpecs = [
+  { categoria: "Motor", valor: "1.4 Tipo 4 cilindros" },
+  { categoria: "Potencia", valor: "58 HP" },
+  { categoria: "Transmisión", valor: "Manual 5 velocidades" },
+  { categoria: "Año", valor: "1995" },
+  { categoria: "Color", valor: "Beige" },
+  { categoria: "Kilometraje", valor: "ya perdí la cuenta" },
+];
 
-/* Inicio del Juego */
+// Array de modificaciones realizadas
+const modifications = [
+  { descripcion: "Cambio de junta de tapa", fecha: "14-10-2024" },
+  { descripcion: "Instalacion de alarma electrica", fecha: "05-09-2025" },
+  { descripcion: "Mantenimiento de carburador", fecha: "20-09-2025" },
+];
 
-function iniciarCuento() {
-  console.log("Estas caminando por un bosque en una noche de luna llena...");
-  console.log(
-    "Cuando de repente encuentras una casa antigua y algo tenebrosa."
+// ===== FUNCIONES CONSTRUCTORAS =====
+
+// Función constructora para el auto
+function Auto(marca, modelo, año, color) {
+  this.marca = marca;
+  this.modelo = modelo;
+  this.año = año;
+  this.color = color;
+  this.encendido = false;
+  this.luces = false;
+  this.kilometraje = 185000;
+  // SISTEMA DE AUDIOS
+  const sonidoEncendido = new Audio(
+    "/audio/FIAT 147 Y SUS PROBLEMAS..._[cut_1sec].mp3"
   );
-
-  let entrar = prompt("Quieres entrar a la casa? (si/no)");
-
-  if (entrar.toLowerCase() === "si") {
-    dentroDeLaCasa();
-  } else {
-    console.log("Decides seguir camincando y evitar la casa...");
-    console.log("Fin de la historia, sos un miedoso/a");
+  sonidoEncendido.preload = "auto";
+  function reproducirSonidoEncendido() {
+    sonidoEncendido.currenTime = 0;
+    sonidoEncendido.play().catch((error) => {
+      console.log("Error reproduciendo sonido:", error);
+    });
   }
-}
-
-/* Lo que pasa dentro de la casa */
-
-function dentroDeLaCasa() {
-  console.log(
-    "Entras a la casa y ves un living con un sillon lleno de polvo. Parece abandonada hace mucho tiempo."
-  );
-  console.log(
-    "Sientes como una rara presencia en la habitacion, como si no estuvieras solo/a"
-  );
-  console.log("De repente, la puerta se cierra de un golpe atras de ti. ¡PUM!");
-
-  let salir = prompt("Quieres intentar abrir la puerta para irte? (si/no)");
-
-  if (salir.toLowerCase() === "si") {
-    console.log(
-      "Intentas abrirla... pero descubris que tiene 2 cerraduras. Necesitas dos llaves para abrirla."
-    );
-    console.log("tendras que explorar la casa en busca de ellas...");
-    explorarCasa();
-  } else {
-    console.log("Deceides quedarte un rato mas en el living...");
-    console.log(
-      "Pero el aire se vuelve mas pesado y sientes una voz cansada y profunda que te avisa que no vas a salir nunca"
-    );
-  }
-}
-
-/*Explorando la casa */
-
-function explorarCasa() {
-  let jugando = true;
-
-  while (jugando) {
-    let decision = prompt(
-      "¿Dónde quieres ir? (1 = Biblioteca, 2 = Cuarto, 3 = Revisar mochila)"
-    );
-
-    /* Usamos switch para decidir la acción */
-    switch (decision) {
-      case "1":
-        biblioteca();
-        break;
-      case "2":
-        cuarto();
-        break;
-      case "3":
-        console.log(
-          "Mochila: ",
-          mochila.length > 0 ? mochila.join(", ") : "Vacía"
-        );
-        break;
-      default:
-        console.log("Esa opción no es válida, intenta de nuevo.");
+  //Ruta de Imagenes
+  const ImagenApagado = './photos/Enano.png'
+  const ImagenLucesEncendidas = './photos/Lueces on.png'
+  // Métodos del auto
+  this.encender = function () {
+    this.encendido = !this.encendido;
+    if (this.encendido) {
+      reproducirSonidoEncendido();
     }
 
-    /*Verificar si tenemos las dos llaves */
-    if (mochila.includes("Llave 1") && mochila.includes("Llave 2")) {
-      console.log("¡Tenes las dos llaves!");
-      console.log(
-        "Usas las llaves para abrir la puerta y escapar de la casa..."
-      );
-      console.log("Lograste salir con vida. ¡Fin de la aventura!");
-      jugando = false;
+    return this.encendido ? "Auto encendido" : "Auto apagado";
+  };
+
+  this.toggleLuces = function () {
+    this.luces = !this.luces;
+    this.actualizarImagen();
+  };
+  this.actualizarImagen = function(){
+    const carPhoto = document.getElementById('car-photo');
+    if (carPhoto){
+      carPhoto.src = this.luces ? ImagenLucesEncendidas : ImagenApagado
     }
   }
+
+  this.tocarBocina = function () {
+    return "¡Beep beep!";
+  };
+
+  this.agregarKilometros = function (km) {
+    this.kilometraje += km;
+    return this.kilometraje;
+  };
 }
 
-/* En la Biblioteca */
+// Crear instancia del auto
+const miFiat = new Auto("Fiat", "147 Vivace", 1985, "Blanco");
 
-function biblioteca() {
-  console.log(
-    "Entras a la biblioteca. Hay estantes llenos de libros y un pequeño cofre."
+// ===== ALMACENAMIENTO =====
+
+// Array para mantenimiento (se carga desde localStorage o se inicializa)
+let maintenanceTasks = JSON.parse(
+  localStorage.getItem("fiat147Maintenance")
+) || [
+  { tarea: "Cambio de aceite", completada: false },
+  { tarea: "Rotación de neumáticos", completada: true },
+  { tarea: "Alineación y balanceo", completada: false },
+];
+
+// Función para guardar en localStorage
+function guardarMantenimiento() {
+  localStorage.setItem("fiat147Maintenance", JSON.stringify(maintenanceTasks));
+}
+
+// ===== FUNCIONES DE ORDEN SUPERIOR =====
+
+// Función para filtrar tareas completadas
+const tareasCompletadas = maintenanceTasks.filter((tarea) => tarea.completada);
+
+// Función para mapear las especificaciones a HTML
+const specsToHTML = carSpecs
+  .map(
+    (spec) =>
+      `<div class="stat-item"><strong>${spec.categoria}:</strong> ${spec.valor}</div>`
+  )
+  .join("");
+
+// ===== DOM Y EVENTOS =====
+
+// Cargar especificaciones en el DOM
+document.getElementById("specs-list").innerHTML = specsToHTML;
+
+// Cargar modificaciones en el DOM
+const modsHTML = modifications
+  .map(
+    (mod) =>
+      `<div class="stat-item"><strong>${mod.fecha}:</strong> ${mod.descripcion}</div>`
+  )
+  .join("");
+document.getElementById("mods-list").innerHTML = modsHTML;
+
+// Cargar tareas de mantenimiento en el DOM
+function cargarMantenimiento() {
+  const maintenanceHTML = maintenanceTasks
+    .map(
+      (tarea, index) =>
+        `<div class="maintenance-item ${tarea.completada ? "completed" : ""}">
+                    <span>${tarea.tarea}</span>
+                    <button onclick="toggleMantenimiento(${index})">
+                        ${tarea.completada ? "Desmarcar" : "Completar"}
+                    </button>
+                </div>`
+    )
+    .join("");
+  document.getElementById("maintenance-items").innerHTML = maintenanceHTML;
+
+  // Actualizar estadísticas
+  const stats = maintenanceTasks.reduce(
+    (acc, tarea) => {
+      if (tarea.completada) acc.completadas++;
+      else acc.pendientes++;
+      return acc;
+    },
+    { completadas: 0, pendientes: 0 }
   );
 
-  /* Solo agrega el papel si todavía no lo tenías */
-  if (!mochila.includes("Papel con contraseña")) {
-    console.log(
-      "Encontras un papel arrugado en el suelo con una contraseña escrita."
-    );
-    mochila.push("Papel con contraseña");
-    console.log("Has guardado el 'Papel con contraseña' en tu mochila.");
-  }
-
-  let usarPapel = prompt("¿Queres usar el papel para abrir el cofre? (si/no)");
-
-  if (
-    usarPapel.toLowerCase() === "si" &&
-    mochila.includes("Papel con contraseña") &&
-    !mochila.includes("Llave 1")
-  ) {
-    console.log("Usas la contraseña del papel y logras abrir el cofre.");
-    console.log("Dentro encuentras la primera llave. 🔑");
-    mochila.push("Llave 1");
-  } else if (usarPapel.toLowerCase() === "si" && mochila.includes("Llave 1")) {
-    console.log("Ya abriste este cofre antes, está vacío.");
-  } else {
-    console.log(
-      "sientes una voz cansada y profunda que te avisa que no vas a salir nunca"
-    );
-  }
+  document.getElementById("stats-display").innerHTML = `
+                <div class="stat-item"><strong>Tareas completadas:</strong> ${stats.completadas}</div>
+                <div class="stat-item"><strong>Tareas pendientes:</strong> ${stats.pendientes}</div>
+                <div class="stat-item"><strong>Total de tareas:</strong> ${maintenanceTasks.length}</div>
+            `;
 }
 
-/* En el Cuarto */
-function cuarto() {
-  console.log(
-    "Entras a un cuarto con una cama vieja y una mesa de luz con una lampara antigua y rota"
-  );
+// Función para alternar estado de mantenimiento
+window.toggleMantenimiento = function (index) {
+  maintenanceTasks[index].completada = !maintenanceTasks[index].completada;
+  guardarMantenimiento();
+  cargarMantenimiento();
+};
 
-  if (!mochila.includes("Llave 2")) {
-    console.log("Abres el cajon de la mesa de luz y encuentras una llave.");
-    mochila.push("Llave 2");
-  } else {
-    console.log("Ya revisaste la mesa de luz, no hay nada mas");
+// ===== EVENTOS =====
+// Evento para encender/apagar el auto
+document.getElementById("btn-start").addEventListener("click", function () {
+  const estado = miFiat.encender();
+  document.getElementById("car-status").textContent = `Estado: ${estado}`;
+  this.textContent = miFiat.encendido ? "Apagar Auto" : "Encender Auto";
+  this.style.background = miFiat.encendido ? "#cc0000" : "#0033a0";
+});
+
+// Evento para las luces
+document.getElementById("btn-lights").addEventListener("click", function () {
+  if (!miFiat.encendido) {
+    alert("Primero debe encender el auto");
+    return;
   }
-}
+  const estadoLuces = miFiat.toggleLuces();
+});
 
-iniciarCuento();
+// Evento para la bocina
+document.getElementById("btn-horn").addEventListener("click", function () {
+  if (!miFiat.encendido) {
+    alert("Primero debe encender el auto");
+    return;
+  }
+  alert(miFiat.tocarBocina());
+});
+
+// Evento para agregar nueva tarea de mantenimiento
+document
+  .getElementById("btn-add-maintenance")
+  .addEventListener("click", function () {
+    const nuevaTarea = document.getElementById("new-maintenance").value.trim();
+    if (nuevaTarea) {
+      maintenanceTasks.push({ tarea: nuevaTarea, completada: false });
+      guardarMantenimiento();
+      cargarMantenimiento();
+      document.getElementById("new-maintenance").value = "";
+    }
+  });
+
+// Permitir agregar con Enter
+document
+  .getElementById("new-maintenance")
+  .addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      document.getElementById("btn-add-maintenance").click();
+    }
+  });
+
+// ===== INICIALIZACIÓN =====
+cargarMantenimiento();
